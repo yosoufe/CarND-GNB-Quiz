@@ -1,3 +1,0 @@
-/media/yousof/Volume/SDC/Gits/CarND-GNB-Quiz/build/CMakeFiles/rebuild_cache.dir
-/media/yousof/Volume/SDC/Gits/CarND-GNB-Quiz/build/CMakeFiles/edit_cache.dir
-/media/yousof/Volume/SDC/Gits/CarND-GNB-Quiz/build/CMakeFiles/GNB.dir
