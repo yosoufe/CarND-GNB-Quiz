@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/media/yousof/Volume/SDC/Gits/CarND-GNB-Quiz/src/classifier.cpp
+iostream
+-
+sstream
+-
+fstream
+-
+math.h
+-
+vector
+-
+classifier.h
+/media/yousof/Volume/SDC/Gits/CarND-GNB-Quiz/src/classifier.h
+
+/media/yousof/Volume/SDC/Gits/CarND-GNB-Quiz/src/classifier.h
+iostream
+-
+sstream
+-
+fstream
+-
+math.h
+-
+vector
+-
+
+/media/yousof/Volume/SDC/Gits/CarND-GNB-Quiz/src/main.cpp
+classifier.h
+/media/yousof/Volume/SDC/Gits/CarND-GNB-Quiz/src/classifier.h
+iostream
+-
+fstream
+-
+math.h
+-
+vector
+-
+
