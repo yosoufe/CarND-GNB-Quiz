@@ -21,6 +21,13 @@ GNB::GNB() {
 
 GNB::~GNB() {}
 
+GNB::features GNB::calculateFeatures(features states){
+	features res;
+	res = states;
+	res[1] = fmod(res[1],4);
+	return res;
+}
+
 void GNB::train ( vector<vector<double>> data, vector<string> labels ) {
 
 	/*
@@ -51,7 +58,8 @@ void GNB::train ( vector<vector<double>> data, vector<string> labels ) {
 		for (auto class_it = possible_labels.begin(); class_it < possible_labels.end(); class_it++, j++){
 			string& label = *class_it;
 			if (label.compare(labels[i])==0){
-				m_model[j].samples.push_back(sample);
+				features feat=calculateFeatures(sample);
+				m_model[j].samples.push_back(feat);
 				for(size_t i_features = 0; i_features < m_feature_size; i_features++){
 					m_model[j].sum[i_features] += sample[i_features];
 				}
@@ -82,7 +90,14 @@ void GNB::train ( vector<vector<double>> data, vector<string> labels ) {
 	cout << "Samples sorted in classes" << endl;	
 }
 
-string GNB::predict ( vector<double> ) {
+double gaussianProb(double obs, double mu, double std){
+	double num = pow(obs-mu , 2);
+	double den = 2* pow(std ,2);
+	double norm = 1.0 / sqrt(2*M_PI*pow(std,2));
+	return norm * exp(-num/den);
+}
+
+string GNB::predict ( vector<double> states) {
 	/*
 		Once trained, this method is called and expected to return
 		a predicted behavior for the given observation.
@@ -100,6 +115,23 @@ string GNB::predict ( vector<double> ) {
 		# TODO - complete this
 	*/
 
-	return this->possible_labels[1];
+	double max_prob = 0;
+	int best_idx = -1;
+	features feat=calculateFeatures(states);
+
+	size_t i = 0;
+	for(auto class_it = m_model.begin(); class_it< m_model.end(); class_it++, i++){
+		double prod = 1;
+		class_model& clas = *class_it;
+		for(size_t i=0; i< feat.size();i++){
+			prod *= gaussianProb(feat[i],clas.mean[i],clas.std[i]);
+		}
+		if(prod > max_prob){
+			max_prob = prod;
+			best_idx = i;
+		}
+	}
+
+	return this->possible_labels[best_idx];
 
 }

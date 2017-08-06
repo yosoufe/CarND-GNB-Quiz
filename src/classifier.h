@@ -42,7 +42,9 @@ public:
 
     void train ( vector<vector<double> > data, vector<string>  labels );
 
-    string predict ( vector<double> );
+		string predict ( vector<double> states);
+
+		features calculateFeatures(features states);
 
 };
 
