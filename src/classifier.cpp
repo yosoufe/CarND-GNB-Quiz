@@ -10,7 +10,7 @@
  */
 GNB::GNB() {
 	m_model = vector<class_model>(possible_labels.size());
-	m_feature_size = 4;
+	m_feature_size = 5;
 	for( auto model_it= m_model.begin(); model_it < m_model.end(); model_it++ ){
 		class_model& model = *model_it;
 		model.mean = features(m_feature_size, 0.0);
@@ -21,11 +21,15 @@ GNB::GNB() {
 
 GNB::~GNB() {}
 
-GNB::features GNB::calculateFeatures(features states){
-	features res;
-	res = states;
-	res[1] = fmod(res[1],4);
-	return res;
+GNB::features GNB::calculateFeatures(features &states){
+	features feat(m_feature_size);
+
+	feat[0] = states[0];
+	feat[1] = fmod(states[1]+2.0,4.0);
+	feat[2] = states[2];
+	feat[3] = atan2(states[3],feat[0]);
+	feat[4] = pow(states[2],2) + pow(states[3],2);
+	return feat;
 }
 
 void GNB::train ( vector<vector<double>> data, vector<string> labels ) {
@@ -61,7 +65,7 @@ void GNB::train ( vector<vector<double>> data, vector<string> labels ) {
 				features feat=calculateFeatures(sample);
 				m_model[j].samples.push_back(feat);
 				for(size_t i_features = 0; i_features < m_feature_size; i_features++){
-					m_model[j].sum[i_features] += sample[i_features];
+					m_model[j].sum[i_features] += feat[i_features];
 				}
 				break;
 			}
@@ -71,6 +75,7 @@ void GNB::train ( vector<vector<double>> data, vector<string> labels ) {
 	// calculate the mean and std of the class samples
 	for( auto model_it= m_model.begin(); model_it < m_model.end(); model_it++ ){
 		class_model& model = *model_it;
+		model.prob = (double)model.samples.size()/(double)data.size();
 		for(size_t i= 0; i<m_feature_size; i++){
 			model.mean[i] = model.sum[i]/model.samples.size();
 		}
@@ -87,7 +92,7 @@ void GNB::train ( vector<vector<double>> data, vector<string> labels ) {
 		}
 	}
 	
-	cout << "Samples sorted in classes" << endl;	
+	//cout << "Samples sorted in classes" << endl;
 }
 
 double gaussianProb(double obs, double mu, double std){
@@ -121,8 +126,8 @@ string GNB::predict ( vector<double> states) {
 
 	size_t i = 0;
 	for(auto class_it = m_model.begin(); class_it< m_model.end(); class_it++, i++){
-		double prod = 1;
 		class_model& clas = *class_it;
+		double prod = clas.prob;
 		for(size_t i=0; i< feat.size();i++){
 			prod *= gaussianProb(feat[i],clas.mean[i],clas.std[i]);
 		}
@@ -133,5 +138,4 @@ string GNB::predict ( vector<double> states) {
 	}
 
 	return this->possible_labels[best_idx];
-
 }

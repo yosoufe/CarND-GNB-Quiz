@@ -23,6 +23,7 @@ public:
         features sum;
         features std;
         features mean;
+				double prob;
     }class_model;
    
     vector<class_model> m_model;
@@ -44,7 +45,7 @@ public:
 
 		string predict ( vector<double> states);
 
-		features calculateFeatures(features states);
+		features calculateFeatures(features &states);
 
 };
 
